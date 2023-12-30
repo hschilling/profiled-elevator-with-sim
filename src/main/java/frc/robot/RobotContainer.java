@@ -82,7 +82,7 @@ public class RobotContainer {
     m_driverController
         .x()
         .whileTrue(
-            new ElevatorToHeightCommand(.5, elevator));
+          elevator.toHeightInlineCommand(0.5));
 
     m_driverController
         .y()
