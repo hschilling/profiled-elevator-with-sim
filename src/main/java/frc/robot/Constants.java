@@ -28,6 +28,14 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
   public static final class ElevatorConstants {
+    public static final double kpPos = 5.0;
+    public static final double kiPos = 0.0;
+    public static final double kdPos = 1.0;
+
+    public static final double gravityCompensation = 0.05;
+
+    public static final double simMeasurementStdDev = 0.0;  // Meters
+
     public static final int ELEVATOR_MOTOR_ID = 7;
     public static final int ELEVATOR_SLEW = 5;
 
@@ -39,6 +47,6 @@ public final class Constants {
     public static final double METERS_PER_REVOLUTION = Units.inchesToMeters(27) / 41.951946;
 
     //can be 1 inch off from goal setpoints and still considered at goal; made higher so placeConeOnNode cmd in auton will execute
-    public static final double HEIGHT_TOLERANCE = Units.inchesToMeters(1);
+    public static final double HEIGHT_TOLERANCE = Units.inchesToMeters(0.5);
 }
 }
