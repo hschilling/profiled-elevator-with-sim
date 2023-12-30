@@ -32,7 +32,7 @@ public class SimEncoder {
    * Get the speed of the encoder.
    *
    * @return The speed of the encoder in whatever units the user used when
-   *     calling setSpeed.
+   *     calling setMotorSpeed.
    */
   public double getSpeed() {
     return speed.get();
@@ -53,7 +53,7 @@ public class SimEncoder {
    *
    * @param speed Speed of the encoder in unit's of the users choice.
    */
-  public void setSpeed(double speed) {
+  public void setMotorSpeed(double speed) {
     this.speed.set(speed);
   }
 

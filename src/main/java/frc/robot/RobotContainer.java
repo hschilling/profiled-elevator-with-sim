@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.elevator.ElevatorToHeightCommand;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -31,21 +31,22 @@ public class RobotContainer {
   // The driver's controller
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
-  public static Elevator elevator;
+  public Elevator elevator;
 
   public RobotContainer() {
     setUpSubsystems();
     configureButtonBindings();
   }
 
-  private void setUpSubsystems () {
+  private void setUpSubsystems() {
     ElevatorIO elevatorIO;
     if (RobotBase.isSimulation()) {
-        elevatorIO = new ElevatorIOSim();
+      elevatorIO = new ElevatorIOSim();
     } else {
-        elevatorIO = new ElevatorIOReal();
+      elevatorIO = new ElevatorIOReal();
     }
     elevator = new Elevator(elevatorIO);
+    elevator.disable();
   }
 
   /**
@@ -63,7 +64,7 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  elevator.setGoal(0.5);
+                  elevator.setGoal(0.2);
                   elevator.enable();
                 },
                 elevator));
@@ -73,10 +74,26 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  elevator.setGoal(1.0);
+                  elevator.setGoal(0.5);
                   elevator.enable();
                 },
                 elevator));
+
+    m_driverController
+        .x()
+        .whileTrue(
+            new ElevatorToHeightCommand(.5, elevator));
+
+    m_driverController
+        .y()
+        .whileTrue(
+            elevator.toHeightInlineCommand(0.2));
+
+    m_driverController
+        .leftBumper()
+        .whileTrue(
+            Commands.run(
+                () -> elevator.setMotorSpeed(-m_driverController.getRawAxis(1))));
 
   }
 

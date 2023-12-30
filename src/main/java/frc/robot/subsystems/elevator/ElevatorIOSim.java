@@ -1,7 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -9,44 +7,42 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.util.SimEncoder;
 
 public class ElevatorIOSim implements ElevatorIO {
-    public static SimEncoder elevatorSimEncoder;
-    public static ElevatorSim elevatorSim;
+    public static SimEncoder elevatorSimEncoder;  // Our own class. Just a dumb class that gets and sets values representing an encoder
+    public static ElevatorSim elevatorSim;  // from WPILib
     public double elevatorSpeed;
-    public static CANSparkMax elevatorMotorControllerRight;
-    public final static DCMotor elevatorGearbox = DCMotor.getNEO(2);
+    public final static DCMotor elevatorGearbox = DCMotor.getNEO(1);
     // Simulated elevator constants and gearbox
     public static final double elevatorGearRatio = 9.0;
     public static final double elevatorDrumRadius = Units.inchesToMeters(1.0);
     public static final double elevatorCarriageMass = 5.5; // kg
-    // The simulated encoder will return
     public static final double elevatorEncoderDistPerPulse = 2.0 * Math.PI * elevatorDrumRadius / 4096;
 
-    public ElevatorIOSim()
-    {
+    public ElevatorIOSim() {
         elevatorSimEncoder = new SimEncoder("elevator");
         elevatorSim = new ElevatorSim(
-        elevatorGearbox,
-        elevatorGearRatio,
-        elevatorCarriageMass,
-        elevatorDrumRadius,
-        Constants.ElevatorConstants.MIN_ELEVATOR_HEIGHT,
-        Constants.ElevatorConstants.MAX_ELEVATOR_HEIGHT,
-        true,
-        VecBuilder.fill(0.001)
-      );
-    
+                elevatorGearbox,
+                elevatorGearRatio,
+                elevatorCarriageMass,
+                elevatorDrumRadius,
+                Constants.ElevatorConstants.MIN_ELEVATOR_HEIGHT,
+                Constants.ElevatorConstants.MAX_ELEVATOR_HEIGHT,
+                true,
+                VecBuilder.fill(Constants.ElevatorConstants.simMeasurementStdDev));
+
     }
+
     @Override
     public double getEncoderSpeed() {
         return elevatorSimEncoder.getSpeed();
     }
 
     @Override
-    public void setSpeed(double speed) {
+    public void setMotorSpeed(double speed) {
         elevatorSpeed = speed;
     }
 
@@ -56,31 +52,35 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
-    public void setPosition(double position) {
+    public void setEncoderPosition(double position) {
         elevatorSimEncoder.setDistance(position);
     }
 
     @Override
     public double getElevatorCurrent() {
-        return elevatorSim.getCurrentDrawAmps(); // TODO What is is?
+        return elevatorSim.getCurrentDrawAmps();
     }
 
     @Override
     public void periodicUpdate() {
         // sets input for elevator motor in simulation
+        // SmartDashboard.putNumber("Elevator/periodicUpdate sim motor speed periodicUpdate (-1 to 1)", elevatorSpeed);
         elevatorSim.setInput(elevatorSpeed * RobotController.getBatteryVoltage());
+        SmartDashboard.putNumber("Elevator/periodicUpdate battery voltate", RobotController.getBatteryVoltage());
         // Next, we update it. The standard loop time is 20ms.
         elevatorSim.update(0.02);
         // Finally, we set our simulated encoder's readings
+        SmartDashboard.putNumber("Elevator/periodicUpdate elevatorSim.getPositionMeters (m)", elevatorSim.getPositionMeters());
+
         elevatorSimEncoder.setDistance(elevatorSim.getPositionMeters());
+
+
+        SmartDashboard.putNumber("Elevator/elevatorSimEncoder.getDistance (m)", elevatorSimEncoder.getDistance());
+
         // sets our simulated encoder speeds
-        elevatorSimEncoder.setSpeed(elevatorSim.getVelocityMetersPerSecond());
+        elevatorSimEncoder.setMotorSpeed(elevatorSim.getVelocityMetersPerSecond());
 
         // SimBattery estimates loaded battery voltages
         RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(elevatorSim.getCurrentDrawAmps()));
-    } 
+    }
 }
-
-
-
-    

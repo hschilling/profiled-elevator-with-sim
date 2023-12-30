@@ -20,7 +20,6 @@ public class ElevatorIOReal implements ElevatorIO {
             Constants.NEO_CURRENT_LIMIT, false, true, 0.1);
         
         elevatorEncoder = elevatorMotorController.getEncoder();
-        elevatorEncoder.setPosition(0); 
         elevatorEncoder.setPositionConversionFactor(ElevatorConstants.METERS_PER_REVOLUTION);
         // dividng by 60 to convert meters per miniute to meters per seconds
         elevatorEncoder.setVelocityConversionFactor(ElevatorConstants.METERS_PER_REVOLUTION / 60);
@@ -36,12 +35,12 @@ public class ElevatorIOReal implements ElevatorIO {
     }
     
     @Override
-    public void setSpeed(double speed) {
+    public void setMotorSpeed(double speed) {
         elevatorMotorController.set(speed);
     }
 
     @Override
-    public void setPosition(double position) {
+    public void setEncoderPosition(double position) {
         elevatorEncoder.setPosition(position);
     }
 

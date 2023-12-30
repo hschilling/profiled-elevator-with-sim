@@ -4,8 +4,8 @@ public interface ElevatorIO {
     
     public double getEncoderPosition();
     public double getEncoderSpeed();
-    public void setSpeed(double speed);
-    public void setPosition(double position);
+    public void setMotorSpeed(double speed);
+    public void setEncoderPosition(double position);
     public void periodicUpdate();
     public double getElevatorCurrent();
 }
