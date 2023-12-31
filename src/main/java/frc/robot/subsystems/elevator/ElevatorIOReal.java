@@ -52,7 +52,7 @@ public class ElevatorIOReal implements ElevatorIO {
     @Override
     public void periodicUpdate() {
         // Only code in here that relates a physical subsystem
-        SmartDashboard.putNumber("elevator/l temp (C)", elevatorMotorController.getMotorTemperature());
+        SmartDashboard.putNumber("elevator/Real motor temp (C)", elevatorMotorController.getMotorTemperature());
     }
 
 }

@@ -31,7 +31,7 @@ public class ElevatorIOSim implements ElevatorIO {
                 elevatorDrumRadius,
                 Constants.ElevatorConstants.MIN_ELEVATOR_HEIGHT,
                 Constants.ElevatorConstants.MAX_ELEVATOR_HEIGHT,
-                true,
+                true,  // whether to use gravity
                 VecBuilder.fill(Constants.ElevatorConstants.simMeasurementStdDev));
 
     }
@@ -64,23 +64,23 @@ public class ElevatorIOSim implements ElevatorIO {
     @Override
     public void periodicUpdate() {
         // sets input for elevator motor in simulation
-        // SmartDashboard.putNumber("Elevator/periodicUpdate sim motor speed periodicUpdate (-1 to 1)", elevatorSpeed);
+        SmartDashboard.putNumber("Elevator/Sim motor speed (-1 to 1)", elevatorSpeed);
         elevatorSim.setInput(elevatorSpeed * RobotController.getBatteryVoltage());
-        SmartDashboard.putNumber("Elevator/periodicUpdate battery voltate", RobotController.getBatteryVoltage());
+        SmartDashboard.putNumber("Elevator/Sim battery voltage", RobotController.getBatteryVoltage());
         // Next, we update it. The standard loop time is 20ms.
         elevatorSim.update(0.02);
         // Finally, we set our simulated encoder's readings
-        SmartDashboard.putNumber("Elevator/periodicUpdate elevatorSim.getPositionMeters (m)", elevatorSim.getPositionMeters());
+        SmartDashboard.putNumber("Elevator/Sim position (m)", elevatorSim.getPositionMeters());
 
         elevatorSimEncoder.setDistance(elevatorSim.getPositionMeters());
 
 
-        SmartDashboard.putNumber("Elevator/elevatorSimEncoder.getDistance (m)", elevatorSimEncoder.getDistance());
+        SmartDashboard.putNumber("Elevator/Sim encoder position (m)", elevatorSimEncoder.getDistance());
 
         // sets our simulated encoder speeds
         elevatorSimEncoder.setMotorSpeed(elevatorSim.getVelocityMetersPerSecond());
 
-        // SimBattery estimates loaded battery voltages
+        // BatterySim estimates loaded battery voltages
         RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(elevatorSim.getCurrentDrawAmps()));
     }
 }

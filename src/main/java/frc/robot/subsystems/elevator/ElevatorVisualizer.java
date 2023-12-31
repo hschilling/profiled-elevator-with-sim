@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants;
 
@@ -18,6 +19,7 @@ public class ElevatorVisualizer {
         elevatorMechanism = root.append(new MechanismLigament2d("elevator", Constants.ElevatorConstants.MIN_ELEVATOR_HEIGHT, 50));
         elevatorMechanism.setColor(new Color8Bit(0, 204, 255));
         elevatorMechanism.setLineWeight(20);
+        SmartDashboard.putData("Mech2d", mech);
     }
 
     public void update(double currentPos){
