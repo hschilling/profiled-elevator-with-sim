@@ -105,4 +105,10 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     m_robotContainer.elevator.setMotorSpeed(testPidController.calculate(m_robotContainer.elevator.getMeasurement(), 0.0));
   }
+
+  @Override
+  public void simulationPeriodic()
+  {
+    
+  }
 }
