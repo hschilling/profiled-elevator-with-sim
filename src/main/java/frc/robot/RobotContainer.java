@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.elevator.ElevatorToHeightCommand;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
@@ -64,6 +63,7 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
+                  System.out.println("A button");
                   elevator.setGoal(0.2);
                   elevator.enable();
                 },
@@ -82,18 +82,37 @@ public class RobotContainer {
     m_driverController
         .x()
         .whileTrue(
-          elevator.toHeightInlineCommand(0.5));
+            elevator.toHeightInlinePIDOnlyCommand(0.5));
 
     m_driverController
         .y()
         .whileTrue(
-            elevator.toHeightInlineCommand(0.2));
+            elevator.toHeightInlinePIDOnlyCommand(0.2));
 
     m_driverController
-        .leftBumper()
+        .leftBumper() // button 5
         .whileTrue(
             Commands.run(
-                () -> elevator.setMotorSpeed(-m_driverController.getRawAxis(1))));
+                () -> elevator.setMotorSpeed(0.2)));
+    // () -> elevator.setMotorSpeed(-m_driverController.getRawAxis(1))));
+
+    m_driverController
+        .rightBumper() // button 6
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  elevator.disable();
+                  elevator.setMotorSpeed(0.5);
+                }));
+    m_driverController
+    .back() // button 7
+    .whileTrue(
+        Commands.run(
+            () -> {
+              elevator.disable();
+              elevator.setMotorSpeed(0.0);
+            }));
+            // () -> elevator.setMotorSpeed(-m_driverController.getRawAxis(1))));
 
   }
 
